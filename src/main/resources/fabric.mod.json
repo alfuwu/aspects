@@ -1,0 +1,38 @@
+{
+	"schemaVersion": 1,
+	"id": "encaspects",
+	"version": "${version}",
+	"name": "Aspects",
+	"description": "Aspects implements a few new enchantments, to help spice up normal enchanting gameplay.",
+	"authors": [
+		"Alfred"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "MIT",
+	"icon": "assets/encaspects/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"com.alfred.aspects.AspectsMod"
+		],
+		"client": [
+			"com.alfred.aspects.AspectsModClient"
+		]
+	},
+	"mixins": [
+		"encaspects.mixins.json",
+		{
+			"config": "encaspects.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.15.0",
+		"minecraft": "~1.20.4",
+		"java": ">=17",
+		"fabric-api": "*"
+	}
+}
