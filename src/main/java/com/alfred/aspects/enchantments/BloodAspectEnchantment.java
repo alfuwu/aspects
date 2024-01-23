@@ -1,9 +1,11 @@
+package com.alfred.aspects.enchantments;
+
+import com.alfred.aspects.AspectsMod;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentTarget;
-import net.minecraft.enchantment.EnchantmentType;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.world.World;
 
 public class BloodAspectEnchantment extends Enchantment {
     public BloodAspectEnchantment() {
@@ -26,11 +28,7 @@ public class BloodAspectEnchantment extends Enchantment {
     }
 
     @Override
-    public void onTargetDamaged(int level, World world, PlayerEntity user, LivingEntity target, int damage) {
-        if (level == 1) {
-            user.heal(0.5f * damage);
-        } else if (level == 2) {
-            user.heal(0.75f * damage);
-        }
+    public void onTargetDamaged(LivingEntity user, Entity target, int level) {
+        user.heal(0.1f * AspectsMod.getEntityDamage(user, target) * (float) Math.pow(level, 0.5f));
     }
 }

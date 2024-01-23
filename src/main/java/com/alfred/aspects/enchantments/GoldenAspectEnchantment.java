@@ -1,9 +1,16 @@
+package com.alfred.aspects.enchantments;
+
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentTarget;
-import net.minecraft.enchantment.EnchantmentType;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.world.World;
+import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.screen.ScreenTexts;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 
 public class GoldenAspectEnchantment extends Enchantment {
     public GoldenAspectEnchantment() {
@@ -30,9 +37,23 @@ public class GoldenAspectEnchantment extends Enchantment {
     }
 
     @Override
-    public void onTargetDamaged(int level, World world, PlayerEntity user, LivingEntity target, int damage) {
-        if (level == 1) {
-            user.addStatusEffect(new StatusEffectInstance(StatusEffects.ABSORPTION, 200, 1));
-        }
+    public Text getName(int level) {
+        MutableText mutableText = Text.translatable(this.getTranslationKey()).formatted(Formatting.GOLD);
+
+        if (level != 1 || this.getMaxLevel() != 1)
+            mutableText.append(ScreenTexts.SPACE).append(Text.translatable("enchantment.level." + level));
+
+        return mutableText;
+    }
+
+    @Override
+    public void onTargetDamaged(LivingEntity user, Entity target, int level) {
+        if (target instanceof LivingEntity livingTarget)
+            livingTarget.addStatusEffect(new StatusEffectInstance(StatusEffects.ABSORPTION, 200 * level, level));
+    }
+
+    @Override
+    public boolean isAvailableForEnchantedBookOffer() {
+        return false;
     }
 }

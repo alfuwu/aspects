@@ -1,12 +1,12 @@
+package com.alfred.aspects.enchantments;
+
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentTarget;
-import net.minecraft.enchantment.EnchantmentType;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.world.World;
 
 public class EarthAspectEnchantment extends Enchantment {
     public EarthAspectEnchantment() {
@@ -29,16 +29,10 @@ public class EarthAspectEnchantment extends Enchantment {
     }
 
     @Override
-    public void onTargetDamaged(int level, World world, PlayerEntity user, Entity target, int damage) {
-        if (target instanceof LivingEntity) {
-            LivingEntity livingTarget = (LivingEntity) target;
-            if (level == 1) {
-                livingTarget.addStatusEffect(new StatusEffectInstance(StatusEffects.SLOWNESS, 30, 0));
-                livingTarget.addStatusEffect(new StatusEffectInstance(StatusEffects.BLINDNESS, 30, 0));
-            } else if (level == 2) {
-                livingTarget.addStatusEffect(new StatusEffectInstance(StatusEffects.SLOWNESS, 40, 1));
-                livingTarget.addStatusEffect(new StatusEffectInstance(StatusEffects.BLINDNESS, 40, 1));
-            }
+    public void onTargetDamaged(LivingEntity user, Entity target, int level) {
+        if (target instanceof LivingEntity livingTarget) {
+            livingTarget.addStatusEffect(new StatusEffectInstance(StatusEffects.SLOWNESS, 20 + (10 * level), 0));
+            livingTarget.addStatusEffect(new StatusEffectInstance(StatusEffects.BLINDNESS, 20 + (10 * level), 0));
         }
     }
 }

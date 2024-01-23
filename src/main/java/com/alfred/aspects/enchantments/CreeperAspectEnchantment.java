@@ -1,9 +1,10 @@
+package com.alfred.aspects.enchantments;
+
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentTarget;
-import net.minecraft.enchantment.EnchantmentType;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.TntEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.world.World;
 
@@ -28,10 +29,13 @@ public class CreeperAspectEnchantment extends Enchantment {
     }
 
     @Override
-    public void onTargetDamaged(int level, World world, PlayerEntity user, Entity target, int damage) {
-        if (!world.isClient && target instanceof LivingEntity) {
-            LivingEntity livingTarget = (LivingEntity) target;
-            world.createExplosion(livingTarget, livingTarget.getX(), livingTarget.getY(), livingTarget.getZ(), 2.0f, true, true);
-        }
+    public void onTargetDamaged(LivingEntity user, Entity target, int level) {
+        if (!user.getEntityWorld().isClient)
+            user.getEntityWorld().createExplosion(user, target.getX(), target.getY(), target.getZ(), 2.0f, World.ExplosionSourceType.MOB);
+    }
+
+    @Override
+    public boolean isAvailableForEnchantedBookOffer() {
+        return false;
     }
 }

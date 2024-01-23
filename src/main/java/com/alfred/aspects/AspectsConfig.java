@@ -1,12 +1,13 @@
+package com.alfred.aspects;
+
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
 import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
-import net.minecraft.item.Item;
-import net.minecraft.item.Items;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.item.*;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.tag.ItemTags;
 
 import java.util.Arrays;
 import java.util.List;
@@ -32,32 +33,32 @@ public class AspectsConfig implements ConfigData {
     @ConfigEntry.Category("Item Restrictions")
     public List<String> allowedItemTypes = Arrays.asList("sword", "axe", "bow", "crossbow");
 
-    public static DiscordConfig getInstance() {
-        return AutoConfig.getConfigHolder(DiscordConfig.class).getConfig();
+    public static AspectsConfig getInstance() {
+        return AutoConfig.getConfigHolder(AspectsConfig.class).getConfig();
     }
     public static void save() {
-        AutoConfig.getConfigHolder(DiscordConfig.class).save();
+        AutoConfig.getConfigHolder(AspectsConfig.class).save();
     }
     public static void load() {
-        AutoConfig.getConfigHolder(DiscordConfig.class).load();
+        AutoConfig.getConfigHolder(AspectsConfig.class).load();
     }
 
     // Get a list of allowed items based on the configured item types
     public List<Item> getAllowedItems() {
-        return Registry.ITEM.stream()
+        return Registries.ITEM.stream()
             .filter(item -> allowedItemTypes.contains(getItemType(item)))
             .toList();
     }
 
     // Get the item type as a string
     private String getItemType(Item item) {
-        if (item.isIn(ItemTags.SWORDS)) {
+        if (item instanceof SwordItem) {
             return "sword";
-        } else if (item.isIn(ItemTags.AXES)) {
+        } else if (item instanceof AxeItem) {
             return "axe";
-        } else if (item.isIn(ItemTags.BOWS)) {
+        } else if (item instanceof BowItem) {
             return "bow";
-        } else if (item.isIn(ItemTags.CROSSBOWS)) {
+        } else if (item instanceof CrossbowItem) {
             return "crossbow";
         } else {
             return "other";

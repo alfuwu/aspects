@@ -1,7 +1,9 @@
+package com.alfred.aspects.enchantments;
+
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentTarget;
-import net.minecraft.enchantment.EnchantmentType;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.Vec3d;
@@ -28,10 +30,9 @@ public class WindAspectEnchantment extends Enchantment {
     }
 
     @Override
-    public void onTargetDamaged(int level, World world, PlayerEntity user, Entity target, int damage) {
-        if (target instanceof LivingEntity) {
-            LivingEntity livingTarget = (LivingEntity) target;
-            Vec3d motion = new Vec3d(0, 1, 0).multiply(1.5); // Change the motion vector as needed
+    public void onTargetDamaged(LivingEntity user, Entity target, int level) {
+        if (target instanceof LivingEntity livingTarget) {
+            Vec3d motion = livingTarget.getVelocity().add(0, 15 * level, 0);
             livingTarget.setVelocity(motion);
         }
     }
