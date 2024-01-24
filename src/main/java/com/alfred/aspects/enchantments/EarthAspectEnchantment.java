@@ -1,5 +1,7 @@
 package com.alfred.aspects.enchantments;
 
+import com.alfred.aspects.AspectsConfig;
+import com.alfred.aspects.AspectsMod;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.Entity;
@@ -7,15 +9,16 @@ import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.item.ItemStack;
 
 public class EarthAspectEnchantment extends Enchantment {
     public EarthAspectEnchantment() {
-        super(Enchantment.Rarity.UNCOMMON, EnchantmentTarget.WEAPON, new EquipmentSlot[] { EquipmentSlot.MAINHAND });
+        super(Enchantment.Rarity.RARE, EnchantmentTarget.VANISHABLE, new EquipmentSlot[] { EquipmentSlot.MAINHAND });
     }
 
     @Override
     public boolean canAccept(Enchantment other) {
-        return !AspectsMod.isAspectEnchantment(other) && super.canAccept(other);
+        return (!AspectsMod.isAspectEnchantment(other) || other instanceof GravityAspectEnchantment) && super.canAccept(other);
     }
 
     @Override

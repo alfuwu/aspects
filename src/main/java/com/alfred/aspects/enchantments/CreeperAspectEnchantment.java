@@ -1,15 +1,20 @@
 package com.alfred.aspects.enchantments;
 
+import com.alfred.aspects.AspectsConfig;
+import com.alfred.aspects.AspectsMod;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+import net.minecraft.world.explosion.EntityExplosionBehavior;
+import net.minecraft.world.explosion.Explosion;
 
 public class CreeperAspectEnchantment extends Enchantment {
     public CreeperAspectEnchantment() {
-        super(Enchantment.Rarity.VERY_RARE, EnchantmentTarget.WEAPON, new EquipmentSlot[] { EquipmentSlot.MAINHAND });
+        super(Enchantment.Rarity.VERY_RARE, EnchantmentTarget.VANISHABLE, new EquipmentSlot[] { EquipmentSlot.MAINHAND });
     }
 
     @Override
@@ -40,7 +45,7 @@ public class CreeperAspectEnchantment extends Enchantment {
     @Override
     public void onTargetDamaged(LivingEntity user, Entity target, int level) {
         if (!user.getEntityWorld().isClient)
-            user.getEntityWorld().createExplosion(user, target.getX(), target.getY(), target.getZ(), 2.0f, World.ExplosionSourceType.MOB);
+            user.getEntityWorld().createExplosion(AspectsConfig.getInstance().creeperAspectDamagesSelf ? null : user, Explosion.createDamageSource(user.getEntityWorld(), AspectsConfig.getInstance().creeperAspectDamagesSelf ? null : user), new EntityExplosionBehavior(user), target.getX(), target.getY(), target.getZ(), level * 2, false, World.ExplosionSourceType.MOB);
     }
 
     @Override

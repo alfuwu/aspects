@@ -1,20 +1,25 @@
 package com.alfred.aspects.enchantments;
 
+import com.alfred.aspects.AspectsConfig;
+import com.alfred.aspects.AspectsMod;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentTarget;
-import net.minecraft.enchantment.Enchantments;
+import net.minecraft.enchantment.KnockbackEnchantment;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.sound.SoundEvent;
+import net.minecraft.sound.SoundEvents;
 
 public class GravityAspectEnchantment extends Enchantment {
     public GravityAspectEnchantment() {
-        super(Enchantment.Rarity.UNCOMMON, EnchantmentTarget.WEAPON, new EquipmentSlot[] { EquipmentSlot.MAINHAND });
+        super(Enchantment.Rarity.RARE, EnchantmentTarget.VANISHABLE, new EquipmentSlot[] { EquipmentSlot.MAINHAND });
     }
 
     @Override
     public boolean canAccept(Enchantment other) {
-        return (!AspectsMod.isAspectEnchantment(other) || other instanceof EarthAspectEnchantment) && !(other instanceof Enchantments.KNOCKBACK) && super.canAccept(other);
+        return (!AspectsMod.isAspectEnchantment(other) || other instanceof EarthAspectEnchantment) && !(other instanceof KnockbackEnchantment) && super.canAccept(other);
     }
 
     @Override
@@ -40,6 +45,7 @@ public class GravityAspectEnchantment extends Enchantment {
     @Override
     public void onTargetDamaged(LivingEntity user, Entity target, int level) {
         if (target instanceof LivingEntity livingTarget)
-            livingTarget.setVelocity(livingTarget.getVelocity().add(0, 0, 0)); // perform vector math to get normalized vector of direction between user and the target to apply inverse knockback
+            livingTarget.setVelocity(livingTarget.getVelocity().add(user.getPos().add(target.getPos().multiply(-1)).normalize().multiply(0.5f + (0.5f * level))));
+        user.playSound(SoundEvent.of(SoundEvents.BLOCK_PORTAL_AMBIENT.getId(), 10f), 0.7f, -1f);
     }
 }

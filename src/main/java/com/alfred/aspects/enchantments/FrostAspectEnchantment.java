@@ -1,18 +1,19 @@
 package com.alfred.aspects.enchantments;
 
+import com.alfred.aspects.AspectsConfig;
+import com.alfred.aspects.AspectsMod;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.world.World;
+import net.minecraft.item.ItemStack;
+import net.minecraft.sound.SoundEvent;
+import net.minecraft.sound.SoundEvents;
 
 public class FrostAspectEnchantment extends Enchantment {
     public FrostAspectEnchantment() {
-        super(Enchantment.Rarity.UNCOMMON, EnchantmentTarget.WEAPON, new EquipmentSlot[] { EquipmentSlot.MAINHAND });
+        super(Enchantment.Rarity.RARE, EnchantmentTarget.VANISHABLE, new EquipmentSlot[] { EquipmentSlot.MAINHAND });
     }
 
     @Override
@@ -43,8 +44,9 @@ public class FrostAspectEnchantment extends Enchantment {
     @Override
     public void onTargetDamaged(LivingEntity user, Entity target, int level) {
         if (target instanceof LivingEntity livingTarget) {
-            livingTarget.clearFire(); // frost aspect clears fire, and thus naturally conflicts with Fire Aspect even if it is forced onto the same item
-            livingTarget.setTicksFrozen(Math.min(100 + (100 * level), livingTarget.getTicksFrozen() + (20 * level)));
+            livingTarget.setOnFire(false); // frost aspect clears fire, and thus naturally conflicts with Fire Aspect even if it is forced onto the same item
+            livingTarget.setFrozenTicks(Math.min(livingTarget.getMinFreezeDamageTicks() * 3 + (600 * level), livingTarget.getFrozenTicks() + (300 * level)));
+            user.playSound(SoundEvent.of(SoundEvents.ENTITY_PLAYER_HURT_FREEZE.getId(), 10f), 1f, 1f);
         }
     }
 }

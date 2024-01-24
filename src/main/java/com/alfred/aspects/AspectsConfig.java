@@ -6,8 +6,6 @@ import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
 import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
 import net.minecraft.item.*;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.tag.ItemTags;
 
 import java.util.Arrays;
 import java.util.List;
@@ -22,7 +20,6 @@ public class AspectsConfig implements ConfigData {
     public boolean bloodAspectEnabled = true;
     public boolean poisonAspectEnabled = true;
     public boolean witherAspectEnabled = true;
-    public boolean chaosAspectEnabled = true; // I guess?
     public boolean mirrorAspectCurseEnabled = true;
 
     @Comment("This will allow multiple aspect enchantments to be present on an item at the same time")
@@ -31,12 +28,15 @@ public class AspectsConfig implements ConfigData {
     // Aspects disabled by default
     @Comment("These aspects are disabled by default")
     public boolean creeperAspectEnabled = false;
+    public boolean chaosAspectEnabled = false;
     public boolean dragonAspectEnabled = false;
     public boolean goldenAspectEnabled = false;
+    @Comment("Enchantment-specific settings")
+    public boolean creeperAspectDamagesSelf = true;
 
     // Restrict enchantments to specific item types
     @ConfigEntry.Category("Item Restrictions")
-    @Comment("Acceptable values are \"sword\", \"axe\", \"pickaxe\", \"shovel\", \"hoe\", \"bow\", \"crossbow\", and \"any\"")
+    @Comment("Acceptable values are \"sword\", \"axe\", \"pickaxe\", \"shovel\", \"hoe\", \"bow\", \"crossbow\", \"trident\", and \"any\"")
     public List<String> allowedItemTypes = Arrays.asList("sword", "bow");
 
     public static AspectsConfig getInstance() {
@@ -49,33 +49,16 @@ public class AspectsConfig implements ConfigData {
         AutoConfig.getConfigHolder(AspectsConfig.class).load();
     }
 
-    // Get a list of allowed items based on the configured item types
-    public List<Item> getAllowedItems() {
-        return Registries.ITEM.stream()
-            .filter(item -> allowedItemTypes.contains(getItemType(item)))
-            .toList();
-    }
-
-    // Get the item type as a string
-    private String getItemType(Item item) {
-        if (item instanceof SwordItem) {
-            return "sword";
-        } else if (item instanceof AxeItem) {
-            return "axe";
-        } else if (item instanceof PickaxeItem) {
-            return "pickaxe";
-        } else if (item instanceof ShovelItem) {
-            return "shovel";
-        } else if (item instanceof HoeItem) {
-            return "hoe";
-        } else if (item instanceof BowItem) {
-            return "bow";
-        } else if (item instanceof CrossbowItem) {
-            return "crossbow";
-        } else if (item instanceof RangedItem) {
-            return "ranged";
-        } else {
-            return "any";
-        }
+    public boolean isItemAllowed(Item item) {
+        return (allowedItemTypes.contains("any")) ||
+               (item instanceof SwordItem && allowedItemTypes.contains("sword")) ||
+               (item instanceof AxeItem && allowedItemTypes.contains("axe")) ||
+               (item instanceof PickaxeItem && allowedItemTypes.contains("pickaxe")) ||
+               (item instanceof ShovelItem && allowedItemTypes.contains("shovel")) ||
+               (item instanceof HoeItem && allowedItemTypes.contains("hoe")) ||
+               (item instanceof BowItem && allowedItemTypes.contains("bow")) ||
+               (item instanceof CrossbowItem && allowedItemTypes.contains("crossbow")) ||
+               (item instanceof TridentItem && allowedItemTypes.contains("trident")) ||
+               (item instanceof RangedWeaponItem && allowedItemTypes.contains("ranged"));
     }
 }

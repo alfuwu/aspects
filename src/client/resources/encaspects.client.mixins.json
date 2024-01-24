@@ -3,9 +3,8 @@
   "package": "com.alfred.aspects.mixin.client",
   "compatibilityLevel": "JAVA_17",
   "client": [
-    "ItemRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1
-	}
+  }
 }

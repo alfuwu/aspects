@@ -20,4 +20,10 @@ public abstract class ItemEntityMixin {
         if (AspectsMod.hasEnchantment(this.getStack(), GoldenAspectEnchantment.class))
             cir.setReturnValue(false);
     }
+
+    @Inject(method = "isFireImmune", at = @At("HEAD"), cancellable = true)
+    private void modifyItemOnFire(CallbackInfoReturnable<Boolean> cir) {
+        if (AspectsMod.hasEnchantment(this.getStack(), GoldenAspectEnchantment.class))
+            cir.setReturnValue(true);
+    }
 }

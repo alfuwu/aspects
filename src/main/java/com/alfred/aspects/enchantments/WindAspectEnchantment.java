@@ -1,17 +1,20 @@
 package com.alfred.aspects.enchantments;
 
+import com.alfred.aspects.AspectsConfig;
+import com.alfred.aspects.AspectsMod;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.sound.SoundEvent;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
 
 public class WindAspectEnchantment extends Enchantment {
     public WindAspectEnchantment() {
-        super(Enchantment.Rarity.UNCOMMON, EnchantmentTarget.WEAPON, new EquipmentSlot[] { EquipmentSlot.MAINHAND });
+        super(Enchantment.Rarity.RARE, EnchantmentTarget.VANISHABLE, new EquipmentSlot[] { EquipmentSlot.MAINHAND });
     }
 
     @Override
@@ -42,8 +45,9 @@ public class WindAspectEnchantment extends Enchantment {
     @Override
     public void onTargetDamaged(LivingEntity user, Entity target, int level) {
         if (target instanceof LivingEntity livingTarget) {
-            Vec3d motion = livingTarget.getVelocity().add(0, 15 * level, 0);
+            Vec3d motion = livingTarget.getVelocity().add(0, 0.085f * level, 0);
             livingTarget.setVelocity(motion);
+            user.playSound(SoundEvent.of(SoundEvents.ITEM_ELYTRA_FLYING.getId(), 10f), 2f, 1f);
         }
     }
 }

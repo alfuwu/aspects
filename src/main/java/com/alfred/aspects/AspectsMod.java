@@ -7,56 +7,62 @@ import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.enchantment.Enchantments;
+import net.minecraft.enchantment.FireAspectEnchantment;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class AspectsMod implements ModInitializer {
+    public static Enchantment FROST_ASPECT;
+    public static Enchantment EARTH_ASPECT;
+    public static Enchantment WIND_ASPECT;
+    public static Enchantment GRAVITY_ASPECT;
+    public static Enchantment BLOOD_ASPECT;
+    public static Enchantment POISON_ASPECT;
+    public static Enchantment WITHER_ASPECT;
+    public static Enchantment CHAOS_ASPECT;
+    public static Enchantment MIRROR_ASPECT;
+    public static Enchantment CREEPER_ASPECT;
+    public static Enchantment DRAGON_ASPECT;
+    public static Enchantment GOLDEN_ASPECT;
 	@Override
 	public void onInitialize() {
         AutoConfig.register(AspectsConfig.class, JanksonConfigSerializer::new);
 
-        AspectsConfig config = AspectsConfig.getInstance();
-		if (config.frostAspectEnabled) // this may break if an item with an aspect is loaded when the aspect is disabled, depending on how it breaks, leave in
-            Registry.register(Registries.ENCHANTMENT, new Identifier("aspects", "frost_aspect"), new FrostAspectEnchantment());
-		if (config.earthAspectEnabled)
-            Registry.register(Registries.ENCHANTMENT, new Identifier("aspects", "earth_aspect"), new EarthAspectEnchantment());
-        if (config.windAspectEnabled)
-            Registry.register(Registries.ENCHANTMENT, new Identifier("aspects", "wind_aspect"), new WindAspectEnchantment());
-        if (config.gravityAspectEnabled)
-            Registry.register(Registries.ENCHANTMENT, new Identifier("aspects", "gravity_aspect"), new GravityAspectEnchantment());
-        if (config.bloodAspectEnabled)
-            Registry.register(Registries.ENCHANTMENT, new Identifier("aspects", "blood_aspect"), new BloodAspectEnchantment());
-        if (config.poisonAspectEnabled)
-            Registry.register(Registries.ENCHANTMENT, new Identifier("aspects", "poison_aspect"), new PoisonAspectEnchantment());
-        if (config.witherAspectEnabled)
-            Registry.register(Registries.ENCHANTMENT, new Identifier("aspects", "wither_aspect"), new WitherAspectEnchantment());
-        if (config.chaosAspectEnabled)
-            Registry.register(Registries.ENCHANTMENT, new Identifier("aspects", "chaos_aspect"), new ChaosAspectEnchantment());
-        if (config.mirrorAspectCurseEnabled)
-            Registry.register(Registries.ENCHANTMENT, new Identifier("aspects", "mirror_aspect"), new MirrorAspectEnchantment());
-        if (config.creeperAspectEnabled)
-            Registry.register(Registries.ENCHANTMENT, new Identifier("aspects", "creeper_aspect"), new CreeperAspectEnchantment());
-        if (config.dragonAspectEnabled)
-            Registry.register(Registries.ENCHANTMENT, new Identifier("aspects", "dragon_aspect"), new DragonAspectEnchantment());
-        if (config.goldenAspectEnabled)
-            Registry.register(Registries.ENCHANTMENT, new Identifier("aspects", "golden_aspect"), new GoldenAspectEnchantment());
+        FROST_ASPECT = Registry.register(Registries.ENCHANTMENT, new Identifier("aspects", "frost_aspect"), new FrostAspectEnchantment());
+        EARTH_ASPECT = Registry.register(Registries.ENCHANTMENT, new Identifier("aspects", "earth_aspect"), new EarthAspectEnchantment());
+        WIND_ASPECT = Registry.register(Registries.ENCHANTMENT, new Identifier("aspects", "wind_aspect"), new WindAspectEnchantment());
+        GRAVITY_ASPECT = Registry.register(Registries.ENCHANTMENT, new Identifier("aspects", "gravity_aspect"), new GravityAspectEnchantment());
+        BLOOD_ASPECT = Registry.register(Registries.ENCHANTMENT, new Identifier("aspects", "blood_aspect"), new BloodAspectEnchantment());
+        POISON_ASPECT = Registry.register(Registries.ENCHANTMENT, new Identifier("aspects", "poison_aspect"), new PoisonAspectEnchantment());
+        WITHER_ASPECT = Registry.register(Registries.ENCHANTMENT, new Identifier("aspects", "wither_aspect"), new WitherAspectEnchantment());
+        CHAOS_ASPECT = Registry.register(Registries.ENCHANTMENT, new Identifier("aspects", "chaos_aspect"), new ChaosAspectEnchantment());
+        MIRROR_ASPECT = Registry.register(Registries.ENCHANTMENT, new Identifier("aspects", "mirror_aspect"), new MirrorAspectEnchantment());
+        CREEPER_ASPECT = Registry.register(Registries.ENCHANTMENT, new Identifier("aspects", "creeper_aspect"), new CreeperAspectEnchantment());
+        DRAGON_ASPECT = Registry.register(Registries.ENCHANTMENT, new Identifier("aspects", "dragon_aspect"), new DragonAspectEnchantment());
+        GOLDEN_ASPECT = Registry.register(Registries.ENCHANTMENT, new Identifier("aspects", "golden_aspect"), new GoldenAspectEnchantment());
 	}
 
     public static float getEntityDamage(LivingEntity entity, Entity target) {
-        // TODO: take into account PlayerEntity's attack speed to get a more accurate function
         float f = (float) entity.getAttributeValue(EntityAttributes.GENERIC_ATTACK_DAMAGE);
         if (target instanceof LivingEntity livingTarget)
             f += EnchantmentHelper.getAttackDamage(entity.getMainHandStack(), livingTarget.getGroup());
-        return f;
+        float s;
+        if (entity instanceof PlayerEntity player)
+            s = (float) player.getAttributeValue(EntityAttributes.GENERIC_ATTACK_SPEED) / 20;
+        else
+            s = 0.2f; // 4 attack speed (default)
+        return f * Math.min(1, (entity.getLastAttackTime() / 20f) * s);
     }
 
     public static boolean hasEnchantment(ItemStack stack, Class<? extends Enchantment> enchantment) { // fancy
@@ -71,7 +77,27 @@ public class AspectsMod implements ModInitializer {
         return foundEnchantment.get();
     }
 
+    public static int getEnchantmentLevel(ItemStack stack, Class<? extends  Enchantment> enchantment) {
+        AtomicInteger level = new AtomicInteger(0);
+        for (int i = 0; i < stack.getEnchantments().size(); ++i) {
+            NbtCompound nbtCompound = stack.getEnchantments().getCompound(i);
+            Registries.ENCHANTMENT.getOrEmpty(EnchantmentHelper.getIdFromNbt(nbtCompound)).ifPresent((e) -> {
+                if (enchantment.isInstance(e))
+                    level.set(nbtCompound.getInt("lvl"));
+            });
+        }
+        return level.get();
+    }
+
+    public static void removeEnchantment(ItemStack itemStack, Class<? extends Enchantment> enchantment) {
+        if (itemStack.hasEnchantments()) {
+            Map<Enchantment, Integer> enchantments = EnchantmentHelper.get(itemStack);
+            enchantments.entrySet().removeIf(entry -> enchantment.isInstance(entry.getKey()));
+            EnchantmentHelper.set(enchantments, itemStack);
+        }
+    }
+
     public static boolean isAspectEnchantment(Enchantment other) {
-        return !(!(other instanceof BloodAspectEnchantment || other instanceof ChaosAspectEnchantment || other instanceof CreeperAspectEnchantment || other instanceof DragonAspectEnchant || other instanceof EarthAspectEnchantment || other instanceof FrostAspectEnchantment || other instanceof GoldenAspectEnchantment || other instanceof MirrorAspectEnchantment || other instanceof PoisonAspectEnchantment || other instanceof WindAspectEnchantment || other instanceof WitherAspectEnchantment || other instanceof Enchantments.FIRE_ASPECT) || AspectsConfig.getInstance().allowallowMultipleAspects);
+        return !(!(other instanceof BloodAspectEnchantment || other instanceof ChaosAspectEnchantment || other instanceof CreeperAspectEnchantment || other instanceof DragonAspectEnchantment || other instanceof EarthAspectEnchantment || other instanceof FrostAspectEnchantment || other instanceof GoldenAspectEnchantment || other instanceof MirrorAspectEnchantment || other instanceof PoisonAspectEnchantment || other instanceof WindAspectEnchantment || other instanceof WitherAspectEnchantment || other instanceof FireAspectEnchantment) || AspectsConfig.getInstance().allowMultipleAspects);
     }
 }

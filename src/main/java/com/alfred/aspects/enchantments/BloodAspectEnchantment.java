@@ -1,15 +1,19 @@
 package com.alfred.aspects.enchantments;
 
+import com.alfred.aspects.AspectsConfig;
 import com.alfred.aspects.AspectsMod;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.sound.SoundEvent;
+import net.minecraft.sound.SoundEvents;
 
 public class BloodAspectEnchantment extends Enchantment {
     public BloodAspectEnchantment() {
-        super(Enchantment.Rarity.RARE, EnchantmentTarget.WEAPON, new EquipmentSlot[] { EquipmentSlot.MAINHAND });
+        super(Enchantment.Rarity.RARE, EnchantmentTarget.VANISHABLE, new EquipmentSlot[] { EquipmentSlot.MAINHAND });
     }
 
     @Override
@@ -39,6 +43,7 @@ public class BloodAspectEnchantment extends Enchantment {
 
     @Override
     public void onTargetDamaged(LivingEntity user, Entity target, int level) {
-        user.heal(0.1f * AspectsMod.getEntityDamage(user, target) * (float) Math.pow(level, 0.5f));
+        if (target instanceof LivingEntity)
+            user.heal(0.1f * AspectsMod.getEntityDamage(user, target) * (float) Math.pow(level, 0.5f));
     }
 }
