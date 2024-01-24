@@ -16,6 +16,16 @@ public class FrostAspectEnchantment extends Enchantment {
     }
 
     @Override
+    public boolean canAccept(Enchantment other) {
+        return !AspectsMod.isAspectEnchantment(other) && super.canAccept(other);
+    }
+
+    @Override
+    public boolean isAcceptableItem(ItemStack stack) {
+        return AspectsConfig.getInstance().isItemAllowed(stack.getItem()) && AspectsConfig.getInstance().frostAspectEnabled && super.isAcceptableItem(stack);
+    }
+
+    @Override
     public int getMinPower(int level) {
         return 10 + 20 * (level - 1);
     }
@@ -33,7 +43,8 @@ public class FrostAspectEnchantment extends Enchantment {
     @Override
     public void onTargetDamaged(LivingEntity user, Entity target, int level) {
         if (target instanceof LivingEntity livingTarget) {
-            livingTarget.addStatusEffect(new StatusEffectInstance(StatusEffects.SLOWNESS, 20 + (level * 20), 0));
+            livingTarget.clearFire(); // frost aspect clears fire, and thus naturally conflicts with Fire Aspect even if it is forced onto the same item
+            livingTarget.setTicksFrozen(Math.min(100 + (100 * level), livingTarget.getTicksFrozen() + (20 * level)));
         }
     }
 }

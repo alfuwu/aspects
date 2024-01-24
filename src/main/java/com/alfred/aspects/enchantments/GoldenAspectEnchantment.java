@@ -17,6 +17,16 @@ public class GoldenAspectEnchantment extends Enchantment {
         super(Enchantment.Rarity.VERY_RARE, EnchantmentTarget.WEAPON, new EquipmentSlot[] { EquipmentSlot.MAINHAND });
     }
 
+    @Override
+    public boolean canAccept(Enchantment other) {
+        return !AspectsMod.isAspectEnchantment(other) && super.canAccept(other);
+    }
+
+    @Override
+    public boolean isAcceptableItem(ItemStack stack) {
+        return AspectsConfig.getInstance().isItemAllowed(stack.getItem()) && AspectsConfig.getInstance().goldenAspectEnabled && super.isAcceptableItem(stack);
+    }
+
     // override on item damaged method to remove durability, mixin to item renderer to modify glint color
 
     // also mixin to itementity to mark it as invulnerable if it has this enchantment, so that it cannot be destroyed by lava, cacti, etcetera
@@ -56,4 +66,6 @@ public class GoldenAspectEnchantment extends Enchantment {
     public boolean isAvailableForEnchantedBookOffer() {
         return false;
     }
+
+    // maybe make treasure instead of enchantment table?
 }

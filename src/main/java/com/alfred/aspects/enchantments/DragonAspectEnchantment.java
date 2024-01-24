@@ -13,6 +13,16 @@ public class DragonAspectEnchantment extends Enchantment {
     }
 
     @Override
+    public boolean canAccept(Enchantment other) {
+        return !AspectsMod.isAspectEnchantment(other) && super.canAccept(other);
+    }
+
+    @Override
+    public boolean isAcceptableItem(ItemStack stack) {
+        return AspectsConfig.getInstance().isItemAllowed(stack.getItem()) && AspectsConfig.getInstance().dragonAspectEnabled && super.isAcceptableItem(stack);
+    }
+
+    @Override
     public int getMinPower(int level) {
         return 30 + 40 * (level - 1);
     }

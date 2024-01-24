@@ -5,12 +5,21 @@ import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.world.World;
 
 public class CreeperAspectEnchantment extends Enchantment {
     public CreeperAspectEnchantment() {
         super(Enchantment.Rarity.VERY_RARE, EnchantmentTarget.WEAPON, new EquipmentSlot[] { EquipmentSlot.MAINHAND });
+    }
+
+    @Override
+    public boolean canAccept(Enchantment other) {
+        return !AspectsMod.isAspectEnchantment(other) && super.canAccept(other);
+    }
+
+    @Override
+    public boolean isAcceptableItem(ItemStack stack) {
+        return AspectsConfig.getInstance().isItemAllowed(stack.getItem()) && AspectsConfig.getInstance().creeperAspectEnabled && super.isAcceptableItem(stack);
     }
 
     @Override

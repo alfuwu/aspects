@@ -18,10 +18,15 @@ public class AspectsConfig implements ConfigData {
     public boolean frostAspectEnabled = true;
     public boolean earthAspectEnabled = true;
     public boolean windAspectEnabled = true;
+    public boolean gravityAspectEnabled = true;
     public boolean bloodAspectEnabled = true;
     public boolean poisonAspectEnabled = true;
     public boolean witherAspectEnabled = true;
     public boolean chaosAspectEnabled = true; // I guess?
+    public boolean mirrorAspectCurseEnabled = true;
+
+    @Comment("This will allow multiple aspect enchantments to be present on an item at the same time")
+    public boolean allowMultipleAspects = false;
 
     // Aspects disabled by default
     @Comment("These aspects are disabled by default")
@@ -31,7 +36,8 @@ public class AspectsConfig implements ConfigData {
 
     // Restrict enchantments to specific item types
     @ConfigEntry.Category("Item Restrictions")
-    public List<String> allowedItemTypes = Arrays.asList("sword", "axe", "bow", "crossbow");
+    @Comment("Acceptable values are \"sword\", \"axe\", \"pickaxe\", \"shovel\", \"hoe\", \"bow\", \"crossbow\", and \"any\"")
+    public List<String> allowedItemTypes = Arrays.asList("sword", "bow");
 
     public static AspectsConfig getInstance() {
         return AutoConfig.getConfigHolder(AspectsConfig.class).getConfig();
@@ -56,12 +62,20 @@ public class AspectsConfig implements ConfigData {
             return "sword";
         } else if (item instanceof AxeItem) {
             return "axe";
+        } else if (item instanceof PickaxeItem) {
+            return "pickaxe";
+        } else if (item instanceof ShovelItem) {
+            return "shovel";
+        } else if (item instanceof HoeItem) {
+            return "hoe";
         } else if (item instanceof BowItem) {
             return "bow";
         } else if (item instanceof CrossbowItem) {
             return "crossbow";
+        } else if (item instanceof RangedItem) {
+            return "ranged";
         } else {
-            return "other";
+            return "any";
         }
     }
 }

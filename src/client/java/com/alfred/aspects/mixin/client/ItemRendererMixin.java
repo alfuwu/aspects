@@ -1,4 +1,4 @@
-package com.alfred.aspects.mixin.client;
+﻿package com.alfred.aspects.mixin.client;
 
 import com.alfred.aspects.AspectsMod;
 import com.alfred.aspects.enchantments.GoldenAspectEnchantment;
@@ -32,6 +32,9 @@ public class ItemRendererMixin {
     // why the hecc is this crashing
     // god why
     // help
+    // something about BufferBuilder not being initialized
+    // 🤔
+    // why does this run on normal MC then?
     @Redirect(method = "renderItem(Lnet/minecraft/item/ItemStack;Lnet/minecraft/client/render/model/json/ModelTransformationMode;ZLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;IILnet/minecraft/client/render/model/BakedModel;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/item/ItemRenderer;getItemGlintConsumer(Lnet/minecraft/client/render/VertexConsumerProvider;Lnet/minecraft/client/render/RenderLayer;ZZ)Lnet/minecraft/client/render/VertexConsumer;"))
     private VertexConsumer modifyItemGlint(VertexConsumerProvider vertexConsumers, RenderLayer layer, boolean solid, boolean glint, @Local ItemStack stack) {
         if (AspectsMod.hasEnchantment(stack, GoldenAspectEnchantment.class)) {

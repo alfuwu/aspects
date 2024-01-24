@@ -16,6 +16,16 @@ public class MirrorAspectEnchantment extends Enchantment {
     }
 
     @Override
+    public boolean canAccept(Enchantment other) {
+        return !AspectsMod.isAspectEnchantment(other) && super.canAccept(other);
+    }
+
+    @Override
+    public boolean isAcceptableItem(ItemStack stack) {
+        return AspectsConfig.getInstance().isItemAllowed(stack.getItem()) && AspectsConfig.getInstance().mirrorAspectCurseEnabled && super.isAcceptableItem(stack);
+    }
+
+    @Override
     public int getMinPower(int level) {
         return 25 + 30 * (level - 1);
     }
@@ -33,12 +43,17 @@ public class MirrorAspectEnchantment extends Enchantment {
     @Override
     public void onTargetDamaged(LivingEntity user, Entity target, int level) {
         // Reflect a portion of the damage back to the attacker
-        DamageSource damageSource = user.getDamageSources().mobAttack(user);
-        user.damage(damageSource, AspectsMod.getEntityDamage(user, target) / 2.0f);
+        DamageSource damageSource = user.getDamageSources().magic(); // magjick
+        user.damage(damageSource, AspectsMod.getEntityDamage(user, target) / (2.0f / level));
     }
 
     @Override
     public boolean isCursed() {
         return true;
+    }
+
+    @Override
+    public boolean isAvailableForEnchantedBookOffer() {
+        return false;
     }
 }

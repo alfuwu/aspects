@@ -17,6 +17,16 @@ public class ChaosAspectEnchantment extends Enchantment {
     }
 
     @Override
+    public boolean canAccept(Enchantment other) {
+        return !AspectsMod.isAspectEnchantment(other) && super.canAccept(other);
+    }
+
+    @Override
+    public boolean isAcceptableItem(ItemStack stack) {
+        return AspectsConfig.getInstance().isItemAllowed(stack.getItem()) && AspectsConfig.getInstance().chaosAspectEnabled && super.isAcceptableItem(stack);
+    }
+
+    @Override
     public int getMinPower(int level) {
         return 20 + 30 * (level - 1);
     }
