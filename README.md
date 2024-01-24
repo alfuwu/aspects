@@ -21,7 +21,7 @@ also cannot be removed by grind stones.
 Disabled aspects (overpowered and/or non-serious enchantments, possible to enable via config):
 * Creeper Aspect - Creates an explosion whenever the item enchanted with it hits a solid block or entity.
 * Dragon Aspect - When an item with this aspect is swung, it will create a dragon fireball and shoot it in that direction.
-* Golden Aspect - When applied to an item, Golden Aspect will modify its enchantment glint to be golden. It will also completely
+* Golden Aspect - When applied to an item, Golden Aspect will modify its enchantment color to be golden. It will also completely
 prevent that item from being destroyed, whether it be through lava, durability, or, mayhaps the bane of every item, ***cacti***.
 Oh, it also inflicts absorption on living entities it hits.
 
