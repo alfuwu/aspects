@@ -32,6 +32,7 @@ public class AspectsConfig implements ConfigData {
     public boolean dragonAspectEnabled = false;
     public boolean goldenAspectEnabled = false;
     @Comment("Enchantment-specific settings")
+    public boolean allowEarthAndGravityAspects = true;
     public boolean creeperAspectDamagesSelf = true;
 
     // Restrict enchantments to specific item types

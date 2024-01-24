@@ -18,7 +18,7 @@ public class EarthAspectEnchantment extends Enchantment {
 
     @Override
     public boolean canAccept(Enchantment other) {
-        return (!AspectsMod.isAspectEnchantment(other) || other instanceof GravityAspectEnchantment) && super.canAccept(other);
+        return (!AspectsMod.isAspectEnchantment(other) || (other instanceof GravityAspectEnchantment && AspectsConfig.getInstance().allowEarthAndGravityAspects)) && super.canAccept(other);
     }
 
     @Override
